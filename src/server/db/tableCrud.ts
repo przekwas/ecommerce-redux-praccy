@@ -1,7 +1,7 @@
 import { SelectQuery, ModifyQuery } from './queryUtils';
 import type { ResultSetHeader, RowDataPacket } from 'mysql2';
 
-interface IGenericRow extends RowDataPacket {}
+export interface IGenericRow extends RowDataPacket {}
 interface QueryOptions {
 	columns?: string;
 	extraQuery?: string;
