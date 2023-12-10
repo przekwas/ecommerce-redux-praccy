@@ -18,8 +18,9 @@ export const users = {
 	async register(newUser: Partial<IUserRow>) {
 		newUser.password_hash = await hashPassword(newUser.password);
 		delete newUser.password;
+		const { insertId } = await usersTable.insert(newUser);
 		const jwt = generateToken({
-			id: 1,
+			id: insertId,
 			email: newUser.email,
 			username: newUser.username,
 			role: 'guest'
