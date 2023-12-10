@@ -25,7 +25,7 @@ if (isProduction) {
 app.use(morgan('dev'));
 app.use(express.json());
 
-app.get('/api', indexRouter);
+app.use('/api', indexRouter);
 
 if (isProduction) {
 	app.get('*', (req, res) => {
@@ -34,7 +34,7 @@ if (isProduction) {
 }
 
 app.use((req, res, next) => {
-	const error = new APIError(`Path ${req.originalUrl} not found`);
+	const error = new APIError(`Path ${req.method} ${req.originalUrl} not found`);
 	error.status = 404;
 	next(error);
 });
