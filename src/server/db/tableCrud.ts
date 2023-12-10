@@ -33,6 +33,11 @@ export class Table<T extends IGenericRow> {
 		return SelectQuery(query, [id]);
 	}
 
+	public find(column: string, value: any): Promise<T[]> {
+		const query = `SELECT * FROM ${this.tableName} WHERE ?? = ?`;
+		return SelectQuery(query, [column, value]);
+	}
+
 	public insert(newRow: Partial<T>): Promise<ResultSetHeader> {
 		const query = `INSERT INTO ${this.tableName} SET ?`;
 		return ModifyQuery(query, [newRow]);

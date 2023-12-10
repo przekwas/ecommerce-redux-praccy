@@ -15,8 +15,11 @@ usersRouter.post('/register', async (req, res, next) => {
 
 usersRouter.post('/login', async (req, res, next) => {
 	try {
-		res.json({ msg: 'login' });
+		const userDTO = req.body;
+		const token = await services.users.login(userDTO);
+		res.json({ msg: 'login successful', token });
 	} catch (error) {
 		next(error);
 	}
 });
+
