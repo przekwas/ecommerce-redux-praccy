@@ -1,5 +1,6 @@
 import { Table } from '../tableCrud';
 import { hashPassword } from '../../utils/bcrypt';
+import { generateToken } from '../../utils/jwt';
 import type { IGenericRow } from '../tableCrud';
 
 interface IUserRow extends IGenericRow {
@@ -17,6 +18,12 @@ export const users = {
 	async register(newUser: Partial<IUserRow>) {
 		newUser.password_hash = await hashPassword(newUser.password);
 		delete newUser.password;
-		return newUser;
+		const jwt = generateToken({
+			id: 1,
+			email: newUser.email,
+			username: newUser.username,
+			role: 'guest'
+		});
+		return jwt;
 	}
 };
