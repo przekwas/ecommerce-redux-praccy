@@ -3,6 +3,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import compression from 'compression';
+import { indexRouter } from './routes';
 import { APIError } from './utils/apiError';
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -24,9 +25,7 @@ if (isProduction) {
 app.use(morgan('dev'));
 app.use(express.json());
 
-app.get('/api/hello', (req, res) => {
-	res.json({ message: 'World' });
-});
+app.get('/api', indexRouter);
 
 if (isProduction) {
 	app.get('*', (req, res) => {
