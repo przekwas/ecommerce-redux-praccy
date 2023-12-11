@@ -5,22 +5,39 @@ import { APIError } from '../utils/apiError';
 export const authRouter = Router();
 
 authRouter.post('/verify', async (req, res, next) => {
+	const token = req.cookies.token;
 	try {
-		const value = req.headers['authorization'];
-		let token = null;
-
-		if (!value) {
-			throw new APIError('no token provided', 401);
+		if (token) {
+			try {
+				const isValid = await services.auth.verifyToken(token as string);
+				res.json({ isValid });
+			} catch (error) {
+				throw new APIError('unauthorized', 401);
+			}
+		} else {
+			throw new APIError('unauthorized', 401);
 		}
-
-		const bearerToken = value.split(' ');
-		if (bearerToken[0] === 'Bearer') {
-			token = bearerToken[1];
-		}
-
-		const isValid = await services.auth.verifyToken(token as string);
-		res.json({ isValid });
 	} catch (error) {
 		next(error);
 	}
+});
+
+authRouter.post('/login', async (req, res, next) => {
+	try {
+		const userDTO = req.body;
+		const token = await services.auth.login(userDTO);
+		res.cookie('token', token, {
+			httpOnly: false,
+			secure: process.env.NODE_ENV === 'production',
+			sameSite: 'strict',
+		});
+		res.json({ msg: 'login successful', token });
+	} catch (error) {
+		next(error);
+	}
+});
+
+authRouter.post('/logout', (req, res) => {
+	res.clearCookie('token');
+	res.json({ message: 'logout successful' });
 });
